@@ -27,7 +27,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return view('products.index');
+        $products = Product::paginate(10);
+//        dd($products);
+        return view('products.index', compact('products'));
     }
 
     /**
@@ -49,14 +51,14 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+//        dd($request->all());
         $product = [
             "title" => $request->title,
             "sku" => $request->sku,
             "description" => $request->description
         ];
-
+        // save product
         $product_id = $this->productService->saveProduct($product);
-        $product_id = 1;
 
         $product_image = $request->product_image;
         // save image

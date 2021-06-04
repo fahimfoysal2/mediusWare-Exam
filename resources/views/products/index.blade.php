@@ -24,7 +24,8 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text">Price Range</span>
                         </div>
-                        <input type="text" name="price_from" aria-label="First name" placeholder="From" class="form-control">
+                        <input type="text" name="price_from" aria-label="First name" placeholder="From"
+                               class="form-control">
                         <input type="text" name="price_to" aria-label="Last name" placeholder="To" class="form-control">
                     </div>
                 </div>
@@ -52,31 +53,41 @@
 
                     <tbody>
 
-                    <tr>
-                        <td>1</td>
-                        <td>T-Shirt <br> Created at : 25-Aug-2020</td>
-                        <td>Quality product in low cost</td>
-                        <td>
-                            <dl class="row mb-0" style="height: 80px; overflow: hidden" id="variant">
+                    @if(count($products) == 0)
+                        <h1>No Product Available</h1>
+                    @else
+                        @foreach($products as $count=>$product)
+                            <tr>
+                                <td>{{$count+1}}</td>
+                                <td>{{$product->title}} <br> Created at
+                                    : {{ date('d-M-Y', strtotime($product->created_at))}}</td>
+                                <td>{{$product->description}}</td>
+                                <td>
+                                    <dl class="row mb-0" style="height: 80px; overflow: hidden" id="variant">
 
-                                <dt class="col-sm-3 pb-0">
-                                    SM/ Red/ V-Nick
-                                </dt>
-                                <dd class="col-sm-9">
-                                    <dl class="row mb-0">
-                                        <dt class="col-sm-4 pb-0">Price : {{ number_format(200,2) }}</dt>
-                                        <dd class="col-sm-8 pb-0">InStock : {{ number_format(50,2) }}</dd>
+                                        <dt class="col-sm-3 pb-0">
+                                            SM/ Red/ V-Nick
+                                        </dt>
+                                        <dd class="col-sm-9">
+                                            <dl class="row mb-0">
+                                                <dt class="col-sm-4 pb-0">Price : {{ number_format(200,2) }}</dt>
+                                                <dd class="col-sm-8 pb-0">InStock : {{ number_format(50,2) }}</dd>
+                                            </dl>
+                                        </dd>
                                     </dl>
-                                </dd>
-                            </dl>
-                            <button onclick="$('#variant').toggleClass('h-auto')" class="btn btn-sm btn-link">Show more</button>
-                        </td>
-                        <td>
-                            <div class="btn-group btn-group-sm">
-                                <a href="{{ route('product.edit', 1) }}" class="btn btn-success">Edit</a>
-                            </div>
-                        </td>
-                    </tr>
+                                    <button onclick="$('#variant').toggleClass('h-auto')" class="btn btn-sm btn-link">
+                                        Show
+                                        more
+                                    </button>
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ route('product.edit', 1) }}" class="btn btn-success">Edit</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
 
                     </tbody>
 
@@ -88,7 +99,7 @@
         <div class="card-footer">
             <div class="row justify-content-between">
                 <div class="col-md-6">
-                    <p>Showing 1 to 10 out of 100</p>
+                    <p>{!! $products->links() !!}</p>
                 </div>
                 <div class="col-md-2">
 
