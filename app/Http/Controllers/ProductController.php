@@ -28,6 +28,9 @@ class ProductController extends Controller
     public function create()
     {
         $variants = Variant::all();
+        if (count($variants) == 0){
+            return view('products.create', compact('variants'));
+        }
         return view('products.create', compact('variants'));
     }
 
