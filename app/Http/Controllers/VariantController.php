@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\VariantRequest;
 use App\Models\Variant;
-use Illuminate\Http\Request;
+use Illuminate\Contracts\Foundation\Application;
 
 class VariantController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
+     * @return Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function index()
     {
@@ -22,7 +22,7 @@ class VariantController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
+     * @return Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function create()
     {
@@ -46,7 +46,7 @@ class VariantController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Models\Variant $variant
+     * @param Variant $variant
      * @return \Illuminate\Http\Response
      */
     public function show(Variant $variant)
@@ -57,8 +57,8 @@ class VariantController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param \App\Models\Variant $variant
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
+     * @param Variant $variant
+     * @return Application|\Illuminate\Contracts\View\Factory|\Illuminate\Http\Response|\Illuminate\View\View
      */
     public function edit($id)
     {
@@ -83,12 +83,11 @@ class VariantController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Models\Variant $variant
-     * @return \Illuminate\Http\Response
+     * @param Variant $variant
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($variant)
     {
-//        dd($variant);
         $variant = Variant::findOrFail($variant);
         $variant->delete();
         return redirect()->back()->with('success', 'Variant Deleted');
