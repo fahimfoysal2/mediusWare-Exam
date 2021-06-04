@@ -6,10 +6,20 @@ use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Models\ProductVariantPrice;
 use App\Models\Variant;
+use App\Services\ProductService;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    private $productService;
+    private $variantService;
+
+    public function __construct()
+    {
+        $this->productService = resolve('App\Services\ProductService');
+        $this->variantService = resolve('App\Services\VariantService');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -28,9 +38,6 @@ class ProductController extends Controller
     public function create()
     {
         $variants = Variant::all();
-        if (count($variants) == 0){
-            return view('products.create', compact('variants'));
-        }
         return view('products.create', compact('variants'));
     }
 
@@ -42,7 +49,24 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        $product = [
+            "title" => $request->title,
+            "sku" => $request->sku,
+            "description" => $request->description
+        ];
 
+        $product_id = $this->productService->saveProduct($product);
+        $product_id = 1;
+
+        $product_image = $request->product_image;
+        // save image
+
+        // save product varients- from varients id,
+       $product_variant_ids = $this->variantService->saveProductVariant($product_id, $request->product_variant);
+
+        // save product variant price
+        return $this->variantService
+            ->saveVariantPrice($product_id, $product_variant_ids, $request->product_variant_prices);
     }
 
 

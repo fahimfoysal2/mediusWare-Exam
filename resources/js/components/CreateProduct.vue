@@ -191,11 +191,10 @@ export default {
 
             axios.post('/product', product).then(response => {
                 console.log(response.data);
+                // may be send to another page
             }).catch(error => {
-                console.log(error);
+               alert(error);
             })
-
-            console.log(product);
         }
 
 
