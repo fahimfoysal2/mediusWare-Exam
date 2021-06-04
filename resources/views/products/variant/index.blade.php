@@ -45,7 +45,11 @@
                             <td>
                                 <div class="btn-group btn-group-sm">
                                     <a href="{{ route('product-variant.edit',$variant) }}" class="btn btn-primary">Edit</a>
-                                    <button class="btn btn-danger">delete</button>
+                                    <form id="delete-variant" method="post" action="{{ route('product-variant.destroy',$variant) }}">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
+                                    <button type="submit" class="btn btn-sm btn-danger" form="delete-variant">Delete</button>
                                 </div>
                             </td>
                         </tr>

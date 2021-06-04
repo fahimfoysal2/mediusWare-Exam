@@ -86,8 +86,11 @@ class VariantController extends Controller
      * @param \App\Models\Variant $variant
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Variant $variant)
+    public function destroy($variant)
     {
-        //
+//        dd($variant);
+        $variant = Variant::findOrFail($variant);
+        $variant->delete();
+        return redirect()->back()->with('success', 'Variant Deleted');
     }
 }
