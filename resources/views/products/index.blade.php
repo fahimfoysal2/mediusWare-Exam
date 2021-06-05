@@ -56,33 +56,37 @@
                     @if(count($products) == 0)
                         <h1>No Product Available</h1>
                     @else
-                        @foreach($products as $count=>$product)
+                        @foreach($products['data'] as $count=>$product)
                             <tr>
                                 <td>{{$count+1}}</td>
-                                <td>{{$product->title}} <br> Created at
-                                    : {{ date('d-M-Y', strtotime($product->created_at))}}</td>
-                                <td>{{$product->description}}</td>
+                                <td>{{$product['title']}} <br>
+                                    Created at : {{ date('d-M-Y', strtotime($product['created_at']))}}</td>
+                                <td>{{$product['description']}}</td>
                                 <td>
-                                    <dl class="row mb-0" style="height: 80px; overflow: hidden" id="variant">
-
-                                        <dt class="col-sm-3 pb-0">
-                                            SM/ Red/ V-Nick
-                                        </dt>
-                                        <dd class="col-sm-9">
-                                            <dl class="row mb-0">
-                                                <dt class="col-sm-4 pb-0">Price : {{ number_format(200,2) }}</dt>
-                                                <dd class="col-sm-8 pb-0">InStock : {{ number_format(50,2) }}</dd>
-                                            </dl>
-                                        </dd>
+                                    <dl class="row mb-0" style="height: 80px; overflow: hidden" id="variant-{{$count}}">
+                                        @foreach($product['product_variant_price'] as $pvp)
+                                            <dt class="col-sm-3 pb-0">
+                                                {{$pvp['title']}}
+                                            </dt>
+                                            <dd class="col-sm-9">
+                                                <dl class="row mb-0">
+                                                    <dt class="col-sm-4 pb-0">Price
+                                                        : {{ number_format($pvp['price'],2) }}</dt>
+                                                    <dd class="col-sm-8 pb-0">InStock
+                                                        : {{ number_format($pvp['stock'],2) }}</dd>
+                                                </dl>
+                                            </dd>
+                                        @endforeach
                                     </dl>
-                                    <button onclick="$('#variant').toggleClass('h-auto')" class="btn btn-sm btn-link">
+                                    <button onclick="$('#variant-{{$count}}').toggleClass('h-auto')"
+                                            class="btn btn-sm btn-link">
                                         Show
                                         more
                                     </button>
                                 </td>
                                 <td>
                                     <div class="btn-group btn-group-sm">
-                                        <a href="{{ route('product.edit', 1) }}" class="btn btn-success">Edit</a>
+                                        <a href="{{ route('product.edit', $product['id']) }}" class="btn btn-success">Edit</a>
                                     </div>
                                 </td>
                             </tr>
@@ -99,9 +103,27 @@
         <div class="card-footer">
             <div class="row justify-content-between">
                 <div class="col-md-6">
-                    <p>{!! $products->links() !!}</p>
+                    <p>Showing {{$products['from']." to ".$products['to']}} of total {{$products['total']}} Products</p>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-4">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            @if($products['prev_page_url'])
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ $products['prev_page_url'] }}">Previous</a>
+                                </li>
+                            @endif
+                            <li class="page-item">
+                                <a class="page-link" href="#">Page {{ $products['current_page'] }} of {{ $products['last_page'] }}</a>
+                            </li>
+                            @if($products['next_page_url'])
+
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ $products['next_page_url'] }}">Next</a>
+                                </li>
+                            @endif
+                        </ul>
+                    </nav>
 
                 </div>
             </div>

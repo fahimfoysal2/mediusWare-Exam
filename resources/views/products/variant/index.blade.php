@@ -44,12 +44,16 @@
                             <td>{{ nl2br($variant->description) }}</td>
                             <td>
                                 <div class="btn-group btn-group-sm">
-                                    <a href="{{ route('product-variant.edit',$variant) }}" class="btn btn-primary">Edit</a>
-                                    <form id="delete-variant" method="post" action="{{ route('product-variant.destroy',$variant) }}">
+                                    <a href="{{ route('product-variant.edit',$variant) }}"
+                                       class="btn btn-primary">Edit</a>
+                                    <form id="delete-variant-{{$variant->id}}" method="post"
+                                          action="{{ route('product-variant.destroy',$variant) }}">
                                         @csrf
                                         @method('DELETE')
                                     </form>
-                                    <button type="submit" class="btn btn-sm btn-danger" form="delete-variant">Delete</button>
+                                    <button type="submit" class="btn btn-sm btn-danger"
+                                            form="delete-variant-{{$variant->id}}">Delete
+                                    </button>
                                 </div>
                             </td>
                         </tr>

@@ -12,7 +12,8 @@
                         </div>
                         <div class="form-group">
                             <label for="">Product SKU</label>
-                            <input type="text" v-model="product_sku" placeholder="Product sku" class="form-control">
+                            <input type="text" :value="product_sku" placeholder="Product sku"
+                                   class="form-control">
                         </div>
                         <div class="form-group">
                             <label for="">Description</label>
@@ -26,11 +27,7 @@
                         <h6 class="m-0 font-weight-bold text-primary">Media</h6>
                     </div>
                     <div class="card-body border">
-                        <vue-dropzone ref="myVueDropzone" id="dropzone"
-                                      @vdropzone-success="vsuccess"
-                                      @vdropzone-removed-file="vremoved"
-                                      :options="dropzoneOptions">
-                        </vue-dropzone>
+                        <vue-dropzone ref="myVueDropzone" id="dropzone" :options="dropzoneOptions"></vue-dropzone>
                     </div>
                 </div>
             </div>
@@ -84,7 +81,9 @@
                                 </thead>
                                 <tbody>
                                 <tr v-for="variant_price in product_variant_prices">
-                                    <td>{{ variant_price.title }}</td>
+                                    <td>
+                                        {{ variant_price.title }}
+                                    </td>
                                     <td>
                                         <input type="text" class="form-control" v-model="variant_price.price">
                                     </td>
@@ -100,7 +99,7 @@
             </div>
         </div>
 
-        <button @click="saveProduct" type="submit" class="btn btn-lg btn-primary">Save</button>
+        <button @click="updateProduct" type="submit" class="btn btn-lg btn-primary">Edit</button>
         <button type="button" class="btn btn-secondary btn-lg">Cancel</button>
     </section>
 </template>
@@ -118,34 +117,30 @@ export default {
     props: {
         variants: {
             type: Array,
-            required: true
+            required: true,
         },
         product: {
-            required: false
+            required: true,
         }
     },
     data() {
-        return {
-            product_name: '',
-            product_sku: '',
-            description: '',
-            images: [],
-            product_variant: [
-                {
-                    option: this.variants[0].id,
-                    tags: []
-                }
-            ],
-            product_variant_prices: [],
-            dropzoneOptions: {
-                url: '/upload-image',
-                thumbnailWidth: 150,
-                maxFilesize: 0.5,
-                headers: {
-                    "X-CSRF-TOKEN": document.head.querySelector("[name=csrf-token]").content
+        if (this.product !== undefined) {
+            return {
+                product_id: this.product.id,
+                product_name: this.product.title,
+                product_sku: this.product.sku,
+                description: this.product.description,
+                images: [],
+                product_variant: [],
+                product_variant_prices: this.product.product_variant_price,
+
+                dropzoneOptions: {
+                    url: 'https://httpbin.org/post',
+                    thumbnailWidth: 150,
+                    maxFilesize: 0.5,
+                    headers: {"My-Awesome-Header": "header value"}
                 },
-                addRemoveLinks: true,
-            },
+            }
         }
     },
     methods: {
@@ -193,9 +188,10 @@ export default {
             return ans;
         },
 
-        // store product into database
-        saveProduct() {
+        // update product into database
+        updateProduct() {
             let product = {
+                id: this.product_id,
                 title: this.product_name,
                 sku: this.product_sku,
                 description: this.description,
@@ -204,30 +200,29 @@ export default {
                 product_variant_prices: this.product_variant_prices
             }
 
-
-            axios.post('/product', product).then(response => {
-                // console.log(response.data);
-                alert('Product Created');
+            axios.patch('/product/' + this.product.id, product).then(response => {
+                console.log(response.data);
+                alert('Product Updated');
                 // may be send to another page
                 window.location.reload();
             }).catch(error => {
                 // may be show detailed errors
                 alert(error.response.data.message);
             })
-        },
-
-        // file upload success
-        vsuccess(file, response) {
-            this.images = response;
-        },
-        vremoved(file, xhr, error) {
-          this.images = [];
-        },
+        }
 
 
     },
     mounted() {
-        console.log('Component mounted.')
+        console.log('Component mounted.');
+
+        // make selected variants
+        this.product_variant = this.product.product_variant;
+
+        // make combination for tags
+        this.$nextTick(function () {
+            // this.checkVariant();
+        })
     }
 }
 </script>
